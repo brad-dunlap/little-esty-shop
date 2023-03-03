@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Merchant Dashboard' do
+RSpec.describe 'Merchant Bulk Disctounts' do
 	before(:each) do
 		Merchant.destroy_all
 		Customer.destroy_all
@@ -8,6 +8,7 @@ RSpec.describe 'Merchant Dashboard' do
 		Item.destroy_all
 		Transaction.destroy_all
 		InvoiceItem.destroy_all
+		BulkDiscount.destroy_all
 		@merchant = Merchant.create!(name: "Carlos Jenkins") 
 		@cust1 = Customer.create!(first_name: "Laura", last_name: "Fiel")
 		@cust2 = Customer.create!(first_name: "Bob", last_name: "Fiel")
@@ -50,41 +51,37 @@ RSpec.describe 'Merchant Dashboard' do
 		InvoiceItem.create!(item_id: @bowl.id, invoice_id: @inv5.id)
 		InvoiceItem.create!(item_id: @bowl.id, invoice_id: @inv6.id)
 
-		@bulkdisc1 = @merchant.bulk_discounts.create!(percentage_discount: 0.20, quantity_threshold: 5, name: "20 off 5")
-		@bulkdisc2 = @merchant.bulk_discounts.create!(percentage_discount: 0.30, quantity_threshold: 10, name: "30 off 10")
-    
-    visit "/merchants/#{@merchant.id}/dashboard"
-	end
-  
-  describe 'As a user when I visit my merchant dashboard' do
-    it 'I see the name of my merchant' do 
-
-      expect(page).to have_content("Welcome to your dashboard, Carlos Jenkins")
-    end
-
-    it 'see link to my merchant items index and merchant invoices index' do 
-		
-      expect(page).to have_link("My Merchant Items Index", href: "/merchants/#{@merchant.id}/items")
-      expect(page).to have_link("My Merchant Invoices Index", href: "/merchants/#{@merchant.id}/invoices")
-    end
-
-    it 'shows the top five customers for that merchant and their number of successful transactions' do 
-
-      expect(page).to have_content "Top Five Customers:"
-      expect(page).to have_content "Lucy Fiel -- Transactions: 5"
-      expect(page).to have_content "Tim Fiel -- Transactions: 4"
-      expect(page).to have_content "John Fiel -- Transactions: 3"
-      expect(page).to have_content "Bob Fiel -- Transactions: 2"
-      expect(page).to have_content "Laura Fiel -- Transactions: 2"
-    end
+		@bulkdisc1 = @merchant.bulk_discounts.create!(percentage_discount: 0.20, quantity_threshold: 5, name: '20 off 5')
+		@bulkdisc2 = @merchant.bulk_discounts.create!(percentage_discount: 0.30, quantity_threshold: 10, name: '30 off 10')
+		visit "/merchants/#{@merchant.id}/bulk_discounts"
 	end
 
-	it 'displays a link to view all my discounts' do
-		expect(page).to have_link("View All My Discounts")
-	end
+	describe 'As a merchant, when I visit my merchant bulk discounts index page' do
+		it 'I  see all of my bulk discounts including their percentage discount and quantity thresholds' do
 
-	it 'links to bulk discounts index page' do
-		click_link("View All My Discounts")
-		expect(current_path).to eq("/merchants/#{@merchant.id}/bulk_discounts")
+			within "#bulk_discounts" do
+				expect(page).to have_content("20 off 5")
+				expect(page).to have_content("30 off 10")
+			end
+			
+			within "#bulk_discount_#{@bulkdisc1.id}" do
+				expect(page).to have_content("Percentage Discount: 20%")
+				expect(page).to have_content("Quantity Threshold: 5")
+				expect(page).to_not have_content("Quantity Threshold: 10")
+			end
+
+			within "#bulk_discount_#{@bulkdisc2.id}" do
+				expect(page).to have_content("Percentage Discount: 30%")
+				expect(page).to have_content("Quantity Threshold: 10")
+				expect(page).to_not have_content("Percentage Discount: 20%")
+			end
+		end
+
+		it 'each bulk discount listed includes a link to its show page' do
+			within "#bulk_discounts" do
+				expect(page).to have_link("20 off 5", href: "/merchants/#{@merchant.id}/bulk_discounts/#{@bulkdisc1.id}")
+				expect(page).to have_link("30 off 10", href: "/merchants/#{@merchant.id}/bulk_discounts/#{@bulkdisc2.id}")
+			end
+		end
 	end
 end

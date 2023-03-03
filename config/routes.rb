@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   end
 
   get "/merchants/:id/items", to: "merchant_items#index"
+  get "/merchants/:id/bulk_discounts", to: "merchant_bulk_discounts#index"
 	get "/merchants/:id/invoices", to: "merchant_invoices#index"
 
   get "/merchants/:merchant_id/items/new", to: "merchant_items#new"
