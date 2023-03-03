@@ -5,7 +5,7 @@
 	<p><%= f.text_field :name, required: true %></p>
 
 	<p><%= f.label :percentage_discount, "Percentage Discount (as decimal)" %></p>
-	<p><%= f.text_field :percentage_discount, required: true, type: :number %></p>
+	<p><%= f.text_field :percentage_discount, required: true, type: :float %></p>
 
 	<p><%= f.label :quantity_threshold, "Quantity Threshold"%></p>
 	<p><%= f.text_field :quantity_threshold, required: true, type: :number %></p>

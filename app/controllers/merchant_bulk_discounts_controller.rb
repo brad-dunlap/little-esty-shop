@@ -12,14 +12,16 @@ class MerchantBulkDiscountsController < ApplicationController
 		@merchant = Merchant.find(params[:id])
 		discount = @merchant.bulk_discounts.new(bulk_discount_params)
 		if discount.percentage_discount > 0 && discount.percentage_discount < 1
+			if discount.save
+				redirect_to "/merchants/#{params[:id]}/bulk_discounts"
+			else
+				flash[:notice] = "Discount not created: Required information missing."
+				redirect_to "/merchants/#{@merchant.id}/bulk_discounts/new"
+			end
 		else
 			flash[:notice] = "Discount not created: Please enter discount as a decimal."
-		end
-		if discount.save
-			redirect_to "/merchants/#{params[:id]}/bulk_discounts"
-		else
-			flash[:notice] = "Discount not created: Required information missing."
-			redirect_to "/merchants/#{params[:id]}/bulk_discounts/new"
+			redirect_to "/merchants/#{@merchant.id}/bulk_discounts/new"
+
 		end
 	end
 
