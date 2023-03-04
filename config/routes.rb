@@ -21,6 +21,8 @@ Rails.application.routes.draw do
   get "/merchants/:id/bulk_discounts/new", to: "merchant_bulk_discounts#new"
   post "/merchants/:id/bulk_discounts", to: "merchant_bulk_discounts#create"
   get "/merchants/:id/bulk_discounts/:bulk_discounts_id", to: "merchant_bulk_discounts#show"
+  patch "/merchants/:id/bulk_discounts/:bulk_discounts_id", to: "merchant_bulk_discounts#update"
+  get "/merchants/:id/bulk_discounts/:bulk_discounts_id/edit", to: "merchant_bulk_discounts#edit"
   delete "/merchants/:id/bulk_discounts/:bulk_discounts_id", to: "merchant_bulk_discounts#destroy"
 	
 	get "/merchants/:id/invoices", to: "merchant_invoices#index"

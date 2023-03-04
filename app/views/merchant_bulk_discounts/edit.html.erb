@@ -1,0 +1,14 @@
+<h1>	Edit <%= @discount.name %> </h1>
+
+<%= form_with url: "/merchants/#{@merchant.id}/bulk_discounts/#{@discount.id}", method: :patch, local: true do |f| %>
+	<p><%= f.label :name, "Name" %></p>
+	<p><%= f.text_field :name, value: @discount.name, required: true %></p>
+
+	<p><%= f.label :percentage_discount, "Percentage Discount (as decimal)" %></p>
+	<p><%= f.text_field :percentage_discount, value: number_with_precision(@discount.percentage_discount, precision: 2), required: true, type: :float %></p>
+
+	<p><%= f.label :quantity_threshold, "Quantity Threshold"%></p>
+	<p><%= f.text_field :quantity_threshold, value: @discount.quantity_threshold, required: true, type: :number %></p>
+
+	<p><%= f.submit "Submit", required: true %></p>
+<% end %>
