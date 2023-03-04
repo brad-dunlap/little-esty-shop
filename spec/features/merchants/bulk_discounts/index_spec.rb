@@ -52,5 +52,41 @@ RSpec.describe 'Merchant Bulk Disctounts' do
 			click_link("Create New Discount")
 			expect(current_path).to eq("/merchants/#{@merchant.id}/bulk_discounts/new")
 		end
+
+
+		it 'next to each bulk discount I see a link to delete it' do
+			save_and_open_page
+			within "#bulk_discount_#{@bulkdisc1.id}" do 
+				expect(page).to have_link("Delete")
+			end
+
+			within "#bulk_discount_#{@bulkdisc2.id}" do 
+				expect(page).to have_link("Delete")
+			end
+		end
+
+		it 'When I click the delete link I am redirected back to the bulk discounts index page where I no longer see the discount listed' do
+			within "#bulk_discount_#{@bulkdisc1.id}" do 
+				click_link "Delete"
+			end
+		
+			expect(current_path).to eq("/merchants/#{@merchant.id}/bulk_discounts")
+		
+			within "#bulk_discounts" do
+				expect(page).to_not have_content("20 off 5")
+				expect(page).to have_content("30 off 10")
+			end
+
+			within "#bulk_discount_#{@bulkdisc2.id}" do 
+				click_link "Delete"
+			end
+
+			expect(current_path).to eq("/merchants/#{@merchant.id}/bulk_discounts")
+
+			within "#bulk_discounts" do
+				expect(page).to_not have_content("20 off 5")
+				expect(page).to_not have_content("30 off 10")
+			end
+		end
 	end
 end

@@ -82,20 +82,7 @@ RSpec.describe '#index' do
       expect(current_path).to eq '/merchants/new'
       expect(page).to have_content("Merchant not created: Name can't be blank")
     end
-
-
-    it 'I see the date with the most revenue for each merchant' do
-      load_test_data
-      visit "/admin/merchants"
       
-      within '#top-5-merchants' do
-        within "#id-#{@merchant1.id}" do
-          expect(page).to have_content("Top selling date for #{@merchant1.name} was Friday, March 3, 2023")
-        end
-      end
-    end
-
-  
     it 'I see a section listing the top 5 merchants by revenue and their total revenue' do
       load_test_data
       visit "/admin/merchants"

@@ -17,12 +17,14 @@ Rails.application.routes.draw do
     resources :merchants, only: [:index, :show]
   end
 
-  get "/merchants/:id/items", to: "merchant_items#index"
   get "/merchants/:id/bulk_discounts", to: "merchant_bulk_discounts#index"
   get "/merchants/:id/bulk_discounts/new", to: "merchant_bulk_discounts#new"
   post "/merchants/:id/bulk_discounts", to: "merchant_bulk_discounts#create"
+  delete "/merchants/:id/bulk_discounts/:bulk_discounts_id", to: "merchant_bulk_discounts#destroy"
+	
 	get "/merchants/:id/invoices", to: "merchant_invoices#index"
-
+	
+  get "/merchants/:id/items", to: "merchant_items#index"
   get "/merchants/:merchant_id/items/new", to: "merchant_items#new"
   post "/merchants/:merchant_id/items", to: "merchant_items#create"
   get "/merchants/:merchant_id/items/:item_id", to: "merchant_items#show"

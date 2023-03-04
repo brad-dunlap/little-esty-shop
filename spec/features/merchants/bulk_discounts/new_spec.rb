@@ -30,8 +30,6 @@ RSpec.describe 'Merchant Bulk Disctounts' do
 			fill_in :quantity_threshold, with: 15
 
 			click_button "Submit"
-			save_and_open_page
-			
 			expect(current_path).to eq("/merchants/#{@merchant.id}/bulk_discounts/new")
 			expect(page).to have_content("Discount not created: Please enter discount as a decimal.")
 		end

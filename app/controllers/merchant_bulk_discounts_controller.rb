@@ -21,8 +21,14 @@ class MerchantBulkDiscountsController < ApplicationController
 		else
 			flash[:notice] = "Discount not created: Please enter discount as a decimal."
 			redirect_to "/merchants/#{@merchant.id}/bulk_discounts/new"
-
 		end
+	end
+
+	def destroy
+		@merchant = Merchant.find(params[:id])
+		@bulk_discount = BulkDiscount.find(params[:bulk_discounts_id])
+		@bulk_discount.destroy!
+		redirect_to "/merchants/#{params[:id]}/bulk_discounts"	
 	end
 
 	private
