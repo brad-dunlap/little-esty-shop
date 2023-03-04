@@ -21,7 +21,7 @@ RSpec.describe 'Merchant Bulk Discounts Edit' do
 
 		it "When I change any/all of the information and click submit, I am redirected to the bulk discount's show page and I see the attributes have been updated" do
 			fill_in :name, with: '40 off 15'
-			fill_in :percentage_discount, with: 0.40
+			fill_in :percentage_discount, with: ".40"
 			fill_in :quantity_threshold, with: 15
 
 			click_button "Submit"
@@ -33,6 +33,15 @@ RSpec.describe 'Merchant Bulk Discounts Edit' do
 
 			expect(page).to_not have_content("Percentage Discount: 20%")
 			expect(page).to_not have_content("Quantity Threshold: 5")
+
+			visit "/merchants/#{@merchant.id}/bulk_discounts/#{@bulkdisc1.id}/edit"
+			
+			fill_in :percentage_discount, with: 40
+			
+			click_button "Submit"
+
+			expect(current_path).to eq("/merchants/#{@merchant.id}/bulk_discounts/#{@bulkdisc1.id}/edit")
+			expect(page).to have_content("Discount not created: Please enter discount as a decimal between 0 and 1.")
     end
 	end
 end

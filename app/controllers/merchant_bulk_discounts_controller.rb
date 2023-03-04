@@ -37,8 +37,13 @@ class MerchantBulkDiscountsController < ApplicationController
 	def update
 		@merchant = Merchant.find(params[:id])
 		@discount = BulkDiscount.find(params[:bulk_discounts_id])
-		@discount.update!(bulk_discount_params)
-		redirect_to "/merchants/#{params[:id]}/bulk_discounts"
+		if params[:percentage_discount].to_f > 0 && params[:percentage_discount].to_f < 1
+			@discount.update!(bulk_discount_params)
+			redirect_to "/merchants/#{params[:id]}/bulk_discounts"
+		else
+			flash[:notice] = "Discount not created: Please enter discount as a decimal between 0 and 1."
+			redirect_to "/merchants/#{@merchant.id}/bulk_discounts/#{@discount.id}/edit"
+		end
 	end
 
 	def destroy
