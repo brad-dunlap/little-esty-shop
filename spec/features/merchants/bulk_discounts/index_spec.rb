@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Merchant Bulk Disctounts' do
+RSpec.describe 'Merchant Bulk Discounts' do
 	before(:each) do
 		Merchant.destroy_all
 		Customer.destroy_all
@@ -55,7 +55,6 @@ RSpec.describe 'Merchant Bulk Disctounts' do
 
 
 		it 'next to each bulk discount I see a link to delete it' do
-			save_and_open_page
 			within "#bulk_discount_#{@bulkdisc1.id}" do 
 				expect(page).to have_link("Delete")
 			end
