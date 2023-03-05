@@ -24,12 +24,13 @@ RSpec.describe 'Merchant Invoices Index' do
 		
 		InvoiceItem.create!(item_id: @bowl.id, invoice_id: @inv1.id, quantity: 11, unit_price: 350, status: 1)
 		InvoiceItem.create!(item_id: @knife.id, invoice_id: @inv1.id, quantity: 16, unit_price: 300, status: 1)
+		InvoiceItem.create!(item_id: @plate.id, invoice_id: @inv1.id, quantity: 5, unit_price: 300, status: 1)
 
 		InvoiceItem.create!(item_id: @bowl.id, invoice_id: @inv2.id, quantity: 20, unit_price: 350, status: 1)
 		InvoiceItem.create!(item_id: @knife.id, invoice_id: @inv2.id, quantity: 10, unit_price: 300, status: 1)
 
-		@bulk_discount1 = @merchant.bulk_discounts.create!(percentage_discount: 0.05, quantity_threshold: 10)
-		@bulk_discount2 = @merchant.bulk_discounts.create!(percentage_discount: 0.10, quantity_threshold: 15)
+		@bulkdisc1 = @merchant.bulk_discounts.create!(percentage_discount: 0.05, quantity_threshold: 10)
+		@bulkdisc2 = @merchant.bulk_discounts.create!(percentage_discount: 0.10, quantity_threshold: 15)
 	end
 
 	describe 'As a merchant, when I visit my merchant invoices show page' do
@@ -56,7 +57,7 @@ RSpec.describe 'Merchant Invoices Index' do
 
 		it 'I see the total revenue that will be generated from all of my items on the invoice' do
 			visit "/merchants/#{@merchant.id}/invoices/#{@inv1.id}"
-				expect(page).to have_content("Total Revenue: $86.50")	
+				expect(page).to have_content("Total Revenue: $101.50")	
 
 			visit "/merchants/#{@merchant.id}/invoices/#{@inv2.id}"
 				expect(page).to have_content("Total Revenue: $100.00")				
@@ -115,14 +116,32 @@ RSpec.describe 'Merchant Invoices Index' do
 			describe 'I see the total discounted revenue for my merchant from this invoice which includes bulk discounts in the calculation' do
 				it 'has the total revenue and total discounted revenue' do
 					visit "/merchants/#{@merchant.id}/invoices/#{@inv1.id}"
-					save_and_open_page
-					expect(page).to have_content("Total Revenue: $86.50")
-					expect(page).to have_content("Total Discounted Revenue: $79.78")
+					expect(page).to have_content("Total Revenue: $101.50")
+					expect(page).to have_content("Total Discounted Revenue: $94.78")
 
 					visit "/merchants/#{@merchant.id}/invoices/#{@inv2.id}"
 					
 					expect(page).to have_content("Total Revenue: $100.00")
 					expect(page).to have_content("Total Discounted Revenue: $91.50")
+				end
+			end
+
+			describe 'Next to each invoice item I see a link' do
+				it 'links to the show page for the bulk discount that was applied (if any)' do
+					visit "/merchants/#{@merchant.id}/invoices/#{@inv1.id}"
+					
+					within "#invoice_item-#{@bowl.id}" do
+					save_and_open_page
+						expect(page).to have_link("View Bulk Discount", href: "/merchants/#{@merchant.id}/bulk_discounts/#{@bulkdisc1.id}")
+					end
+	
+					within "#invoice_item-#{@knife.id}" do
+						expect(page).to have_link("View Bulk Discount", href: "/merchants/#{@merchant.id}/bulk_discounts/#{@bulkdisc2.id}")
+					end
+	
+					within "#invoice_item-#{@plate.id}" do
+						expect(page).to_not have_link("View Bulk Discount")
+					end					
 				end
 			end
 		end
