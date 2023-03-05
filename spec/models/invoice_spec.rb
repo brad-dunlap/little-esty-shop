@@ -6,6 +6,7 @@ RSpec.describe Invoice, type: :model do
     @merchant = Merchant.create!(name: "Carlos Jenkins") 
     @bowl = @merchant.items.create!(name: "bowl", description: "it's a bowl", unit_price: 350) 
     @knife = @merchant.items.create!(name: "knife", description: "it's a knife", unit_price: 250) 
+    @spoon = @merchant.items.create!(name: "spoon", description: "it's a spoon", unit_price: 300) 
     @cust1 = Customer.create!(first_name: "Laura", last_name: "Fiel")
     @cust2 = Customer.create!(first_name: "Bob", last_name: "Fiel")
     @cust3 = Customer.create!(first_name: "John", last_name: "Fiel")
@@ -40,6 +41,8 @@ RSpec.describe Invoice, type: :model do
     it { should have_many :transactions }
     it { should have_many :invoice_items }
     it { should have_many(:items).through(:invoice_items) }
+    it { should have_many(:merchants).through(:items) }
+    it { should have_many(:bulk_discounts).through(:merchants) }
   end
 
   describe 'instance methods' do
@@ -63,5 +66,25 @@ RSpec.describe Invoice, type: :model do
 
       expect(@inv1.total_revenue).to eq(85368)
     end
+
+		
+		it 'returns the total discount for my merchant from this invoice' do
+			w = Date.new(2019, 7, 18)
+      @merchant = Merchant.create!(name: "Carlos Jenkins") 
+      @cust1 = Customer.create!(first_name: "Laura", last_name: "Fiel")
+      @inv1 = @cust1.invoices.create!(status: 1, created_at: w)
+      @bowl = @merchant.items.create!(name: "bowl", description: "it's a bowl", unit_price: 350) 
+      @knife = @merchant.items.create!(name: "knife", description: "it's a knife", unit_price: 250) 
+
+      @invit1 = InvoiceItem.create!(item_id: @bowl.id, invoice_id: @inv1.id, status: 2, quantity: 11 , unit_price: 200)
+      @invit2 = InvoiceItem.create!(item_id: @knife.id, invoice_id: @inv1.id, status: 2, quantity: 20, unit_price: 400)
+
+			bulk_discount_1 = @merchant.bulk_discounts.create!(quantity_threshold: 10, percentage_discount: 5)
+			bulk_discount_2 = @merchant.bulk_discounts.create!(quantity_threshold: 15, percentage_discount: 10)
+	
+			expect(@inv1.total_revenue).to eq(10200)
+			expect(@inv1.total_invoice_discount).to eq(910)
+			expect(@inv1.merchant_total_revenue_with_discount).to eq(9290)
+		end
   end
 end
