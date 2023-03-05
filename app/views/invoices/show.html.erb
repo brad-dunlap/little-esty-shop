@@ -20,5 +20,6 @@
 </div>
 <% end %>
 
-<p> Total Revenue: $<%= sprintf("%.2f", (@invoice.total_revenue/100.00))%></p>
+<p> Total Revenue: <%= number_to_currency(@invoice.total_revenue.to_f/100)%></p>
+<p> Total Discounted Revenue: <%= number_to_currency(@invoice.merchant_total_revenue_with_discount.to_f/100) %></p>
 
