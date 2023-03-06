@@ -131,7 +131,6 @@ RSpec.describe 'Merchant Invoices Index' do
 					visit "/merchants/#{@merchant.id}/invoices/#{@inv1.id}"
 					
 					within "#invoice_item-#{@bowl.id}" do
-					save_and_open_page
 						expect(page).to have_link("View Bulk Discount", href: "/merchants/#{@merchant.id}/bulk_discounts/#{@bulkdisc1.id}")
 					end
 	
