@@ -17,6 +17,9 @@ describe "Admin Invoice Show Page" do
         @invit4 = InvoiceItem.create!(item_id: @knife.id, invoice_id: @inv1.id, status: 2, quantity: 2, unit_price: 4567)
         @invit5 = InvoiceItem.create!(item_id: @knife.id, invoice_id: @inv1.id, status: 2, quantity: 6, unit_price: 2050)
 
+				@bulkdisc1 = @merchant.bulk_discounts.create!(percentage_discount: 0.20, quantity_threshold: 5)
+				@bulkdisc2 = @merchant.bulk_discounts.create!(percentage_discount: 0.30, quantity_threshold: 10)
+
         visit "/admin/invoices/#{@inv1.id}"
       end
       describe 'I see information related to that invoice including' do
@@ -147,6 +150,16 @@ describe "Admin Invoice Show Page" do
           expect(page).to have_content('Invoice Status has been updated successfully')
         end
       end
+
+			describe 'When I visit an admin invoice show page' do
+				it 'I see the total revenue from this invoice (not including discounts)' do
+					expect(page).to have_content("Total Revenue: $853.68")
+				end
+
+				it 'I see the total discounted revenue from this invoice' do
+					expect(page).to have_content("Total Discounted Revenue: $762.42")
+				end
+			end
     end
   end
 end

@@ -73,6 +73,7 @@ RSpec.describe Invoice, type: :model do
       @merchant = Merchant.create!(name: "Carlos Jenkins") 
       @cust1 = Customer.create!(first_name: "Laura", last_name: "Fiel")
       @inv1 = @cust1.invoices.create!(status: 1, created_at: w)
+      @inv2 = @cust1.invoices.create!(status: 1, created_at: w)
       @bowl = @merchant.items.create!(name: "bowl", description: "it's a bowl", unit_price: 350) 
       @knife = @merchant.items.create!(name: "knife", description: "it's a knife", unit_price: 250) 
 
