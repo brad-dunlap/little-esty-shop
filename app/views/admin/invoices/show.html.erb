@@ -1,12 +1,12 @@
 <h1>Invoice <%=@invoice.id%></h1>
+<h3>Customer Name: <%= @invoice.customer.first_name%> <%=@invoice.customer.last_name%></h3>
+<h4>Created On: <%= render partial: 'admin/formatted_created_at', locals: {x: @invoice} %> </h4>
+<br>
 <%= form_with model: @invoice, url: admin_invoice_path(@invoice), method: :patch  do |f|%>
 <h2>Invoice Status: <%= f.select(:status, Invoice.statuses.keys, selected: "#{@invoice.status}") %>
 <%= f.submit 'Update Invoice Status'%>
 <%end%> </h2>
-<h2>Created On: <%= render partial: 'admin/formatted_created_at', locals: {x: @invoice} %> </h2>
-<h2>Customer Name: <%= @invoice.customer.first_name%> <%=@invoice.customer.last_name%></h2>
 <div id="invoice_items">
-<h2>Total Revenue: $<%= sprintf("%.2f", (@invoice.total_revenue/100.00))%>
 <h2>Invoice Items:</h2>
   <% @invoice.invoice_items.each do |invoice_item| %>
     <div id="<%=invoice_item.id%>">
@@ -19,5 +19,5 @@
   <%end%>
 </div>
 
-<p> Total Revenue: <%= number_to_currency(@invoice.total_revenue.to_f/100)%></p>
-<p> Total Discounted Revenue: <%= number_to_currency(@invoice.merchant_total_revenue_with_discount.to_f/100) %></p>
+<h3> Total Revenue: <%= number_to_currency(@invoice.total_revenue.to_f/100)%></h3>
+<h3> Total Discounted Revenue: <%= number_to_currency(@invoice.merchant_total_revenue_with_discount.to_f/100) %></h3>
