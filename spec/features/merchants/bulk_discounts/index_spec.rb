@@ -89,7 +89,6 @@ RSpec.describe 'Merchant Bulk Discounts' do
 		end
 
 		it 'I see a section with a header of "Upcoming Holidays"' do
-			save_and_open_page
 			within "#holidays" do
 				expect(page).to have_content("Upcoming Holidays")
 				expect(page).to have_content("Good Friday - 2023-04-07")
